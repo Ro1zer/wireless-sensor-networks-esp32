@@ -20,7 +20,7 @@
       "top": 70.34,
       "left": 211.43,
       "attrs": { "i2cAddress": "0x3c" }
-    }
+    } 
   ],
   "connections": [
     [ "esp:TX", "$serialMonitor:RX", "", [] ],
