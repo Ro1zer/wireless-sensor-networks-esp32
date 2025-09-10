@@ -3,15 +3,52 @@
   "author": "Maksym Oleksiienko",
   "editor": "wokwi",
   "parts": [
-    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
-    { "type": "wokwi-dht22", "id": "dht1", "top": 0.3, "left": 157.8, "attrs": {} }
+    { "type": "wokwi-breadboard-half", "id": "bb1", "top": 16.2, "left": 2.8, "attrs": {} },
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": -57.6, "left": -139.16, "attrs": {} },
+    { "type": "wokwi-dht22", "id": "dht1", "top": 19.5, "left": 52.2, "attrs": {} },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldr1",
+      "top": 18.9,
+      "left": 71.3,
+      "rotate": 90,
+      "attrs": {}
+    },
+    {
+      "type": "board-ssd1306",
+      "id": "oled1",
+      "top": 70.34,
+      "left": 211.43,
+      "attrs": { "i2cAddress": "0x3c" }
+    } 
   ],
   "connections": [
     [ "esp:TX", "$serialMonitor:RX", "", [] ],
     [ "esp:RX", "$serialMonitor:TX", "", [] ],
-    [ "dht1:GND", "esp:GND.2", "black", [ "v28.8", "h-86.4", "v-115.2" ] ],
-    [ "dht1:VCC", "esp:3V3", "red", [ "h-38.4", "v-124.8", "h-129.79" ] ],
-    [ "dht1:SDA", "esp:15", "#8f4814", [ "v0" ] ]
+    [ "esp:3V3", "bb1:bp.1", "red", [ "h-38.25", "v211.2", "h134.4", "v58.5" ] ],
+    [ "esp:CMD", "bb1:bn.1", "black", [ "h-19.05", "v116.5" ] ],
+    [ "bb1:5b.j", "bb1:bp.4", "red", [ "v0" ] ],
+    [ "bb1:8b.j", "bb1:bn.6", "black", [ "v0" ] ],
+    [ "bb1:6b.g", "esp:15", "#8f4814", [ "h-76.8", "v-67.2" ] ],
+    [ "bb1:16b.j", "bb1:bp.13", "red", [ "v0" ] ],
+    [ "bb1:15b.j", "bb1:bn.12", "black", [ "v0" ] ],
+    [ "oled1:GND", "bb1:bn.25", "black", [ "v-28.8", "h96", "v163.2", "h-9.6" ] ],
+    [ "oled1:VCC", "bb1:bp.25", "red", [ "v-19.2", "h76.95", "v144" ] ],
+    [ "oled1:SDA", "esp:21", "green", [ "v-172.8", "h-297.53", "v115.2" ] ],
+    [ "oled1:SCL", "esp:22", "blue", [ "v-144", "h-268.5", "v57.6" ] ],
+    [ "dht1:VCC", "bb1:5b.f", "", [ "$bb" ] ],
+    [ "dht1:SDA", "bb1:6b.f", "", [ "$bb" ] ],
+    [ "dht1:NC", "bb1:7b.f", "", [ "$bb" ] ],
+    [ "dht1:GND", "bb1:8b.f", "", [ "$bb" ] ],
+    [ "ldr1:VCC", "bb1:16b.f", "", [ "$bb" ] ],
+    [ "ldr1:GND", "bb1:15b.f", "", [ "$bb" ] ],
+    [ "ldr1:DO", "bb1:14b.f", "", [ "$bb" ] ],
+    [ "ldr1:AO", "bb1:13b.f", "", [ "$bb" ] ],
+    [ "oled1:GND", "bb1:24t.b", "", [ "$bb" ] ],
+    [ "oled1:VCC", "bb1:25t.b", "", [ "$bb" ] ],
+    [ "oled1:SCL", "bb1:26t.b", "", [ "$bb" ] ],
+    [ "oled1:SDA", "bb1:27t.b", "", [ "$bb" ] ],
+    [ "bb1:13b.g", "esp:34", "gold", [ "h-19.2", "v-220.8", "h-268.8", "v86.4" ] ]
   ],
   "dependencies": {}
 }
