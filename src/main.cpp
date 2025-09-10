@@ -62,10 +62,18 @@ void loop()
   display.print("Temp: ");
   display.print(temperature);
   display.println(" C");
+  if (temperature > 30)
+  {
+    display.println("HOT!");
+  }
   display.print("Hum: ");
   display.print(humidity);
   display.println(" %");
   display.print("Light:");
   display.println(lightValue);
+  if (lightValue < 200)
+  {
+    display.println("DARK!");
+  }
   display.display();
 }
