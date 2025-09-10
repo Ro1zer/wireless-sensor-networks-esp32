@@ -1,18 +1,55 @@
 #include <Arduino.h>
+#include "DHT.h"
 
-// put function declarations here:
-int myFunction(int, int);
+// Налаштування датчика
+#define DHTPIN 15     // Пін підключення DATA
+#define DHTTYPE DHT22 // Тип датчика
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup()
+{
+  Serial.begin(115200);
+  Serial.println("Ініціалізація DHT22...");
+  dht.begin();
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
+void loop()
+{
+  // Затримка між вимірюваннями
+  delay(2000);
+  float humidity = dht.readHumidity();
+  float temperature = dht.readTemperature();
+  
+  // Перевірка, чи дані зчитані коректно
+  if (isnan(humidity) || isnan(temperature))
+  {
+    Serial.println("Помилка зчитування з DHT22!");
+    return;
+  }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+  // Вивід даних у звичайному форматі
+  Serial.print("Температура: ");
+  Serial.print(temperature);
+  Serial.println(" °C");
+  Serial.print("Вологість: ");
+  Serial.print(humidity);
+  Serial.println(" %");
+
+  // Попередження
+  if (temperature > 30.0)
+  {
+    Serial.println("⚠ Попередження: Висока температура!");
+  }
+  if (humidity > 80.0)
+  {
+    Serial.println("⚠ Попередження: Висока вологість!");
+  }
+
+  // Вивід у форматі JSON
+  Serial.print("JSON: {\"temp\": ");
+  Serial.print(temperature);
+  Serial.print(", \"hum\": ");
+  Serial.print(humidity);
+  Serial.println("}");
 }
