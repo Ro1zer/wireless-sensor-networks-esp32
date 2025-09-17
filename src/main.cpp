@@ -1,7 +1,14 @@
 #include <Arduino.h>
+#include <WiFi.h>
+#include <WebServer.h>
 #include "DHT.h"
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+
+// ---- WiFi ----
+const char *ssid = "Wokwi-GUEST"; // у wokwi є відкрита WiFi
+const char *password = "";        // без пароля
+WebServer server(80);
 
 // ---- DHT22 ----
 #define DHTPIN 15
@@ -13,67 +20,72 @@ DHT dht(DHTPIN, DHTTYPE);
 #define SCREEN_HEIGHT 64
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
-// ---- LDR module ----
-#define LDR_PIN 34 // OUT з модуля підключено сюди
+// ---- LDR ----
+#define LDR_PIN 34
+
+void handleRoot()
+{
+  float humidity = dht.readHumidity();
+  float temperature = dht.readTemperature();
+  int lightValue = analogRead(LDR_PIN);
+  String html = "<html><head><meta htp-equiv='refresh' content='5'></head><body>";
+  html += "<h2>Sensor Monitoring</h2>";
+  html += "Temperature: " + String(temperature) + " &deg;C<br>";
+  html += "Humidity: " + String(humidity) + " %<br>";
+  html += "Light: " + String(lightValue) + "<br>";
+  html += "</body></html>";
+  server.send(200, "text/html", html);
+}
 
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("Запуск системи моніторингу...");
   dht.begin();
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
   {
-    Serial.println("Помилка: OLED SSD1306 не знайдено!");
+    Serial.println("Помилка OLED!");
     for (;;)
       ;
   }
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 0);
-  display.println("System Init OK");
-  display.display();
-  delay(2000);
+
+  // WiFi підключення
+  WiFi.begin(ssid, password);
+  Serial.print("Підключення до WiFi...");
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("OK");
+  Serial.print("IP адреса: ");
+  Serial.println(WiFi.localIP());
+
+  // Web server
+  server.on("/", handleRoot);
+  server.begin();
+  Serial.println("Web server запущено");
 }
 
 void loop()
 {
-  delay(2000);
+  server.handleClient();
+
+  // також оновлюємо OLED
   float humidity = dht.readHumidity();
   float temperature = dht.readTemperature();
-  int lightValue = analogRead(LDR_PIN); // 0...4095 для ESP32
-  if (isnan(humidity) || isnan(temperature))
-  {
-    Serial.println("Помилка зчитування з DHT22!");
-    return;
-  }
-
-  // --- Serial Monitor ---
-  Serial.print("Temp: ");
-  Serial.print(temperature);
-  Serial.print(" °C, Hum: ");
-  Serial.print(humidity);
-  Serial.print(" %, Light: ");
-  Serial.println(lightValue);
-
-  // --- OLED Display ---
+  int lightValue = analogRead(LDR_PIN);
   display.clearDisplay();
   display.setCursor(0, 0);
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
   display.print("Temp: ");
   display.print(temperature);
   display.println(" C");
-  if (temperature > 30)
-  {
-    display.println("HOT!");
-  }
   display.print("Hum: ");
   display.print(humidity);
   display.println(" %");
-  display.print("Light:");
+  display.print("Light: ");
   display.println(lightValue);
-  if (lightValue < 200)
-  {
-    display.println("DARK!");
-  }
   display.display();
+  delay(2000);
 }
