@@ -8,16 +8,17 @@
 
 DHT dht(DHTPIN, DHTTYPE);
 
-//WiFi імя 
-const char *ssid = "YOUR_WIFI_SSID";
-//WiFi пароль
-const char *password = "YOUR_WIFI_PASSWORD";
+// Використовуємо локальний SSID та пароль для роботи з віртуальним Wokwi
+const char *ssid = "Wokwi-GUEST";
+const char *password = "";
 
 // API ключ з ThingSpeak
-String apiKey = "YOUR_API_KEY";
+String apiKey = "";
 
 const char *server = "http://api.thingspeak.com/update";
 int ldrPin = 34;
+
+bool checkpoint = false;
 
 void setup()
 {
@@ -35,6 +36,18 @@ void setup()
 
 void loop()
 {
+  if (!checkpoint)
+  {
+    Serial.println("Вставте API ключ: ");
+    apiKey = Serial.readStringUntil('\n');
+    if (apiKey != "")
+    {
+      Serial.print("Ваш ключ: ");
+      Serial.println(apiKey);
+      checkpoint = true;
+    }
+    return;
+  }
   float t = dht.readTemperature();
   float h = dht.readHumidity();
   int light = analogRead(ldrPin);
