@@ -1,80 +1,35 @@
 #include <Arduino.h>
-#include <WiFi.h>
-#include <HTTPClient.h>
 #include "DHT.h"
-
 #define DHTPIN 15
 #define DHTTYPE DHT22
-
 DHT dht(DHTPIN, DHTTYPE);
-
-// Використовуємо локальний SSID та пароль для роботи з віртуальним Wokwi
-const char *ssid = "Wokwi-GUEST";
-const char *password = "";
-
-// API ключ з ThingSpeak
-String apiKey = "";
-
-const char *server = "http://api.thingspeak.com/update";
-int ldrPin = 34;
-
-bool checkpoint = false;
-
+const int LDR_PIN = 34;
+const int RX_PIN = 16; // ESP32 RX2
+const int TX_PIN = 17; // ESP32 TX2
+unsigned long lastSend = 0;
 void setup()
 {
   Serial.begin(115200);
   dht.begin();
-  WiFi.begin(ssid, password);
-  Serial.print("Підключення до WiFi");
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("\nWiFi підключено!");
+  Serial2.begin(9600, SERIAL_8N1, RX_PIN, TX_PIN);
+  Serial.println("ESP32 -> HC-12: старт передачі даних");
 }
-
 void loop()
 {
-  if (!checkpoint)
+  if (millis() - lastSend > 5000)
   {
-    Serial.println("Вставте API ключ: ");
-    apiKey = Serial.readStringUntil('\n');
-    if (apiKey != "")
+    lastSend = millis();
+    float t = dht.readTemperature();
+    float h = dht.readHumidity();
+    int ldr = analogRead(LDR_PIN);
+    if (isnan(t) || isnan(h))
     {
-      Serial.print("Ваш ключ: ");
-      Serial.println(apiKey);
-      checkpoint = true;
+      Serial.println("Помилка DHT22!");
+      Serial2.println("ERR:DHT");
+      return;
     }
-    return;
+    String msg = "T:" + String(t, 1) + " H:" + String(h, 1) + " L:" + String(ldr);
+    Serial.println("-> " + msg);
+    Serial2.println(msg); // надсилаємо у HC-12
   }
-  float t = dht.readTemperature();
-  float h = dht.readHumidity();
-  int light = analogRead(ldrPin);
-  if (isnan(t) || isnan(h))
-  {
-    Serial.println("Помилка зчитування з DHT22!");
-    return;
-  }
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    HTTPClient http;
-    String url = server;
-    url += "?api_key=" + apiKey;
-    url += "&field1=" + String(t);
-    url += "&field2=" + String(h);
-    url += "&field3=" + String(light);
-    http.begin(url);
-    int httpCode = http.GET();
-    if (httpCode > 0)
-    {
-      Serial.println("Дані відправлені на ThingSpeak!");
-    }
-    else
-    {
-      Serial.println("Помилка відправки!");
-    }
-    http.end();
-  }
-  delay(20000); // затримка 20 сек (обмеження ThingSpeak)
 }
