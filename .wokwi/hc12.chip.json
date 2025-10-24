@@ -6,7 +6,8 @@
         "VCC",
         "GND",
         "TX",
-        "RX"
+        "RX",
+        "SET"
     ],
     "controls": []
 }
