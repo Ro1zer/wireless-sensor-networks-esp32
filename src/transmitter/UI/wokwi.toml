@@ -1,0 +1,8 @@
+[wokwi]
+version = 1
+firmware = '.pio\build\esp32_transmitter\firmware.bin'
+elf = '.pio\build\esp32_transmitter\firmware.elf'
+
+[[chip]]
+name = 'hc12'
+binary = '.wokwi/hc12.chip.wasm'

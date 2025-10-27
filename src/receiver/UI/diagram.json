@@ -1,0 +1,115 @@
+{
+    "version": 1,
+    "author": "Maksym Oleksiienko",
+    "editor": "wokwi",
+    "parts": [
+        {
+            "type": "board-esp32-devkit-c-v4",
+            "id": "esp",
+            "top": 85.66,
+            "left": 10,
+            "attrs": {}
+        },
+        {
+            "type": "board-ssd1306",
+            "id": "oled1",
+            "top": 60,
+            "left": 139.79,
+            "attrs": {
+                "i2cAddress": "0x3c"
+            }
+        },
+        {
+            "type": "chip-hc12",
+            "id": "chip1",
+            "top": 173.08,
+            "left": 153.96,
+            "attrs": {}
+        }
+    ],
+    "connections": [
+        [
+            "oled1:GND",
+            "esp:GND.2",
+            "black",
+            [
+                "v-9.6",
+                "h-38.4",
+                "v57.6"
+            ]
+        ],
+        [
+            "oled1:VCC",
+            "esp:3V3",
+            "red",
+            [
+                "h0.15",
+                "v-19.2",
+                "h-182.7",
+                "v67.2"
+            ]
+        ],
+        [
+            "chip1:VCC",
+            "esp:5V",
+            "red",
+            [
+                "h-38.4",
+                "v124.8",
+                "h-105.75"
+            ]
+        ],
+        [
+            "esp:GND.1",
+            "chip1:GND",
+            "black",
+            [
+                "h-19.05",
+                "v76.8",
+                "h134.4",
+                "v-124.8"
+            ]
+        ],
+        [
+            "oled1:SDA",
+            "esp:21",
+            "orange",
+            [
+                "v-38.4",
+                "h-86.33",
+                "v134.4"
+            ]
+        ],
+        [
+            "oled1:SCL",
+            "esp:22",
+            "orange",
+            [
+                "v-28.8",
+                "h-66.9",
+                "v96"
+            ]
+        ],
+        [
+            "chip1:TX",
+            "esp:17",
+            "orange",
+            [
+                "h-19.2",
+                "v9.6"
+            ]
+        ],
+        [
+            "chip1:RX",
+            "esp:18",
+            "orange",
+            [
+                "h11.41",
+                "v-38.4",
+                "h-153.6",
+                "v28.8"
+            ]
+        ]
+    ],
+    "dependencies": {}
+}
