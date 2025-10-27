@@ -1,0 +1,13 @@
+{
+    "version": 1,
+    "name": "hc12",
+    "author": "Maksym Oleksiienko",
+    "pins": [
+        "VCC",
+        "GND",
+        "TX",
+        "RX",
+        "SET"
+    ],
+    "controls": []
+}

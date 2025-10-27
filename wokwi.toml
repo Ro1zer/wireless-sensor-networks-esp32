@@ -2,5 +2,7 @@
 version = 1
 firmware = '.pio\build\esp32doit-devkit-v1\firmware.bin'
 elf = '.pio\build\esp32doit-devkit-v1\firmware.elf'
-[net]
-gateway="ws://localhost:9011"
+
+[[chip]]
+name = 'hc12'
+binary = '.wokwi/hc12.chip.wasm'
