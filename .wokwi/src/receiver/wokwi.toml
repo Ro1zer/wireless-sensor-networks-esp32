@@ -1,0 +1,11 @@
+[wokwi]
+version = 1
+firmware = 'build/receiver/firmware.bin'
+elf = 'build/receiver/firmware.elf'
+
+[net]
+gateway="ws://localhost:9011"
+
+[[chip]]
+name = 'hc12'
+binary = 'hc12/hc12.chip.wasm'

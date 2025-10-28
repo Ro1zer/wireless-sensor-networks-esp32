@@ -1,2 +1,2 @@
-receiver/esp32_receiver*
-transmitter/esp32_transmitter*
+src/receiver/build*
+src/transmitter/build*

@@ -1,8 +1,0 @@
-[wokwi]
-version = 1
-firmware = 'esp32_receiver/firmware.bin'
-elf = 'esp32_receiver/firmware.elf'
-
-[[chip]]
-name = 'hc12'
-binary = 'hc12/hc12.chip.wasm'
